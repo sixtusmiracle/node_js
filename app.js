@@ -40,6 +40,9 @@ function getProfile(username) {
     });
 
   });
+
+  // request.on("error", error => console.error(`Problem with request: ${error.message}`));
+  request.on("error", e => console.error(`An error occured, I couldn\'t get profile details!`));
 }
 
 // console.dir(process.argv.slice(2));
