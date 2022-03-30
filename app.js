@@ -8,7 +8,6 @@
 //* Use Node.js to connect to Treehouse's API to get profile information and print out
 
 const https = require('https'); // require https module
-const username = "chalkers";
 
 /**
  * prints message to the console
@@ -22,22 +21,30 @@ function printMessage(username, badgeCount, points) {
   console.log(message);
 }
 
-// Connect to the API URL (https://teamtreehouse.com/username.json)
-const request = https.get(`https://teamtreehouse.com/${username}.json`, response => {
-  let body = "";
+function getProfile(username) {
+  // Connect to the API URL (https://teamtreehouse.com/username.json)
+  const request = https.get(`https://teamtreehouse.com/${username}.json`, response => {
+    let body = "";
 
-  // Read the data
-  response.on('data', data => {
-    body += data.toString();
+    // Read the data
+    response.on('data', data => {
+      body += data.toString();
+    });
+
+    response.on('end', () => {
+      // Parse the data
+      const profile = JSON.parse(body);
+
+      // Print the data
+      printMessage(username, profile.badges.length, profile.points.JavaScript);
+    });
+
   });
+}
 
-  response.on('end', () => {
-    // Parse the data
-    const profile = JSON.parse(body);
-    console.dir(profile.points.total);
-    printMessage(username, profile.badges.length, profile.points.JavaScript)
+// console.dir(process.argv.slice(2));
+// const users = ["chalkers", "alenaholligan", "davemcfarland"];
+const users = process.argv.slice(2);
 
-    // Print the data
-  });
-
-});
+// users.forEach(username => getProfile(username));
+users.forEach(getProfile); // shortened
