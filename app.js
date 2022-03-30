@@ -32,10 +32,12 @@ const request = https.get(`https://teamtreehouse.com/${username}.json`, response
   });
 
   response.on('end', () => {
-    console.log(body);
-    console.log(typeof body);
+    // Parse the data
+    const profile = JSON.parse(body);
+    console.dir(profile.points.total);
+    printMessage(username, profile.badges.length, profile.points.JavaScript)
+
+    // Print the data
   });
 
-  // Parse the data
-  // Print the data
 });
