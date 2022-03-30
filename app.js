@@ -8,6 +8,7 @@
 //* Use Node.js to connect to Treehouse's API to get profile information and print out
 
 const https = require('https'); // require https module
+const http = require('http'); // require http module
 
 /**
  * prints error to the console
@@ -51,7 +52,7 @@ function getProfile(username) {
         });
 
       } else {
-        const message = `There was an error getting the profile for ${username} (${response.statusCode})`
+        const message = `There was an error getting the profile for ${username} (${http.STATUS_CODES[response.statusCode]})`
         const statusCodeError = new Error(message);
         printError(statusCodeError);
       }
