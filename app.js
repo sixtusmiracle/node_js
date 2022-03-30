@@ -10,6 +10,14 @@
 const https = require('https'); // require https module
 
 /**
+ * prints error to the console
+ * 
+ * @param {object} e 
+ * @returns custom error mesage
+ */
+const printError = e => console.error(e.message);
+
+/**
  * prints message to the console
  * 
  * @param {string} username 
@@ -25,27 +33,34 @@ function getProfile(username) {
   try {
     // Connect to the API URL (https://teamtreehouse.com/username.json)
     const request = https.get(`https://teamtreehouse.com/${username}.json`, response => {
-      let body = "";
+      if (response.statusCode === 200) {
 
-      // Read the data
-      response.on('data', data => {
-        body += data.toString();
-      });
+        let body = "";
 
-      response.on('end', () => {
-        // Parse the data
-        const profile = JSON.parse(body);
+        // Read the data
+        response.on('data', data => {
+          body += data.toString();
+        });
+        response.on('end', () => {
+          // Parse the data
 
-        // Print the data
-        printMessage(username, profile.badges.length, profile.points.JavaScript);
-      });
+          const profile = JSON.parse(body);
 
+          // Print the data
+          printMessage(username, profile.badges.length, profile.points.JavaScript);
+        });
+
+      } else {
+        const message = `There was an error getting the profile for ${username}(${response.statusCode})`
+        const statusCodeError = new Error(message);
+
+      }
     });
 
     // request.on("error", error => console.error(`Problem with request: ${error.message}`));
-    request.on("error", e => console.error(`An error occured, I couldn\'t get profile details!`));
+    request.on("error", printError);
   } catch (e) {
-    console.error(e.message);
+    printError(e);
   }
 }
 
